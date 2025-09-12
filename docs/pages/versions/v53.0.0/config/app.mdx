@@ -1,24 +1,94 @@
----
-title: app.json / app.config.js
-description: A reference of available properties in Expo app config.
-maxHeadingDepth: 5
----
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { BookOpen02Icon } from '@expo/styleguide-icons/outline/BookOpen02Icon';
+export default function App() {
+  const [displayValue, setDisplayValue] = useState('0');
 
-import schema from '~/public/static/schemas/v53.0.0/app-config-schema.json';
-import AppConfigSchemaTable from '~/ui/components/AppConfigSchemaTable';
-import { BoxLink } from '~/ui/components/BoxLink';
+  const handlePress = (value) => {
+    if (value === 'C') {
+      setDisplayValue('0');
+    } else if (value === '=') {
+      try {
+        setDisplayValue(eval(displayValue).toString());
+      } catch (e) {
+        setDisplayValue('Error');
+      }
+    } else {
+      setDisplayValue(displayValue === '0' ? value : displayValue + value);
+    }
+  };
 
-The following is a list of properties that are available for you under the `"expo"` key in **app.json** or **app.config.json**. These properties can be passed to the top level object of **app.config.js** or **app.config.ts**.
+  const renderButton = (value) => (
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => handlePress(value)}
+    >
+      <Text style={styles.buttonText}>{value}</Text>
+    </TouchableOpacity>
+  );
 
-<BoxLink
-  title="Configuration with app config"
-  description="For information on app configuration, the differences between various app config files, and how to use them dynamically."
-  href="/workflow/configuration/"
-  Icon={BookOpen02Icon}
-/>
+  return (
+    <View style={styles.container}>
+      <View style={styles.displayContainer}>
+        <Text style={styles.displayText}>{displayValue}</Text>
+      </View>
+      <View style={styles.buttonRow}>
+        {renderButton('1')}
+        {renderButton('2')}
+        {renderButton('3')}
+        {renderButton('+')}
+      </View>
+      <View style={styles.buttonRow}>
+        {renderButton('4')}
+        {renderButton('5')}
+        {renderButton('6')}
+        {renderButton('-')}
+      </View>
+      <View style={styles.buttonRow}>
+        {renderButton('7')}
+        {renderButton('8')}
+        {renderButton('9')}
+        {renderButton('*')}
+      </View>
+      <View style={styles.buttonRow}>
+        {renderButton('C')}
+        {renderButton('0')}
+        {renderButton('=')}
+        {renderButton('/')}
+      </View>
+    </View>
+  );
+}
 
-## Properties
-
-<AppConfigSchemaTable schema={schema} />
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  displayContainer: {
+    flex: 2,
+    backgroundColor: '#333',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    padding: 20,
+  },
+  displayText: {
+    color: '#fff',
+    fontSize: 50,
+  },
+  buttonRow: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  buttonText: {
+    fontSize: 24,
+  },
+});
